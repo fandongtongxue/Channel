@@ -14,9 +14,11 @@
 - (void)setFrame:(CGRect)frame{
     [super setFrame:frame];
     
-    _titleLabel.frame = CGRectMake(0, (1-(_pageHeight - frame.size.height)/(2*_closeHeight))*(_pageHeight - 1.5*_closeHeight), frame.size.width, _closeHeight);
-    _contentLabel.frame = CGRectMake(0, (1-(_pageHeight - frame.size.height)/(2*_closeHeight))*(_pageHeight - _closeHeight)-_closeHeight/6, frame.size.width, _closeHeight);
-    _contentLabel.alpha = (1-(_pageHeight - frame.size.height)/(2*_closeHeight))*1.5-0.5;
+    CGFloat pageHeight = MAX(_pageHeight, frame.size.height);
+    
+    _titleLabel.frame = CGRectMake(0, (1-(pageHeight - frame.size.height)/(2*_closeHeight))*(pageHeight - 1.5*_closeHeight), frame.size.width, _closeHeight);
+    _contentLabel.frame = CGRectMake(0, (1-(pageHeight - frame.size.height)/(2*_closeHeight))*(pageHeight - _closeHeight)-_closeHeight/6, frame.size.width, _closeHeight);
+    _contentLabel.alpha = (1-(pageHeight - frame.size.height)/(2*_closeHeight))*1.5-0.5;
 }
 
 - (UILabel *)titleLabel{

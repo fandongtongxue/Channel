@@ -47,6 +47,7 @@
         
         scrollView.clipsToBounds = NO;
         
+        
         CGRect frame = CGRectMake(0, 0, self.frame.size.width, _pageHeight);
         for (FDChannelModel * imageModel in _data) {
             
@@ -70,12 +71,17 @@
             frame.origin.y += _closeHeight;
         }
         
-        CGRect viewFrame = _contentView.frame;
-        viewFrame.origin.y = frame.origin.y;
-        _contentView.frame = viewFrame;
-        [scrollView addSubview:_contentView];
+        if (_contentView != nil) {
+            CGRect viewFrame = _contentView.frame;
+            viewFrame.origin.y = frame.origin.y;
+            _contentView.frame = viewFrame;
+            [scrollView addSubview:_contentView];
+            
+            scrollView.contentSize = CGSizeMake(frame.size.width, (_data.count+1)*_pageHeight);
+        } else {
+            scrollView.contentSize = CGSizeMake(frame.size.width, _data.count*_pageHeight);
+        }
         
-        scrollView.contentSize = CGSizeMake(frame.size.width, (_data.count+1)*_pageHeight);
     }else {
         scrollView.contentSize = [self.scrollViews.firstObject contentSize];
     }
@@ -158,26 +164,30 @@
                 frame.origin.y = i*_pageHeight;
                 frame.size.height = _pageHeight;
                 imageView.frame = frame;
-            }else if (i == count) {
+            } else if (i == count) {
                 frame.origin.y = i*_pageHeight;
                 frame.size.height = _pageHeight -(_pageHeight - set)/_pageHeight * 2*_closeHeight;
                 imageView.frame = frame;
                 
                 y = frame.origin.y + _closeHeight + set*(_pageHeight - _closeHeight)/_pageHeight;
-                
             }else{
                 frame.origin.y = y;
                 frame.size.height = _pageHeight-2*_closeHeight;
                 imageView.frame = frame;
                 y += _closeHeight;
             }
+            if (_contentView == nil && i == _data.count-1) {
+                CGPoint point = [self convertPoint:frame.origin fromView:self.scrollViews.firstObject];
+                frame.size.height = MAX(self.frame.size.height - point.y, frame.size.height);
+                imageView.frame = frame;
+            }
             
         }
-        
-        CGRect viewFrame = _contentView.frame;
-        viewFrame.origin.y = y > 0?y: _data.count*_pageHeight;
-        _contentView.frame = viewFrame;
-        
+        if (_contentView != nil) {
+            CGRect viewFrame = _contentView.frame;
+            viewFrame.origin.y = y > 0?y: _data.count*_pageHeight;
+            _contentView.frame = viewFrame;
+        }
     }
 }
 
